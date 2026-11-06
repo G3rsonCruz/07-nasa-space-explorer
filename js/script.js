@@ -1,7 +1,5 @@
-// ========================================
-// DATE INPUTS
-// ========================================
 
+// DATE INPUTS
 const startInput = document.getElementById("startDate");
 const endInput = document.getElementById("endDate");
 
@@ -9,10 +7,7 @@ const endInput = document.getElementById("endDate");
 setupDateInputs(startInput, endInput);
 
 
-// ========================================
 // PAGE ELEMENTS
-// ========================================
-
 const dateForm = document.getElementById("dateForm");
 const gallery = document.getElementById("gallery");
 const getImagesButton = document.getElementById("getImages");
@@ -27,10 +22,7 @@ const modalExplanation = document.getElementById("modalExplanation");
 const modalCredit = document.getElementById("modalCredit");
 
 
-// ========================================
 // RANDOM SPACE FACT
-// ========================================
-
 const spaceFacts = [
   "Sunlight takes about eight minutes to reach Earth.",
   "Venus takes longer to rotate once than to orbit the Sun.",
@@ -46,10 +38,7 @@ document.getElementById("spaceFact").textContent =
   spaceFacts[randomIndex];
 
 
-// ========================================
 // HELPER FUNCTIONS
-// ========================================
-
 // Display dates in a readable format.
 function formatDate(date) {
   return new Date(date + "T12:00:00").toLocaleDateString("en-US", {
@@ -101,10 +90,7 @@ function createMediaPlaceholder(message) {
 }
 
 
-// ========================================
 // FETCH NASA DATA
-// ========================================
-
 async function fetchSpaceEntries(startDate, endDate, signal) {
   // This feed expects dates in YYMMDD format.
   // Example: 2026-11-05 becomes 261105.
@@ -171,10 +157,7 @@ async function fetchSpaceEntries(startDate, endDate, signal) {
 }
 
 
-// ========================================
 // GET SPACE IMAGES BUTTON
-// ========================================
-
 dateForm.addEventListener("submit", async function (event) {
   event.preventDefault();
 
@@ -243,10 +226,7 @@ dateForm.addEventListener("submit", async function (event) {
 });
 
 
-// ========================================
 // DISPLAY THE GALLERY
-// ========================================
-
 function displayGallery(items) {
   // Replace previous cards whenever new results load.
   gallery.replaceChildren();
@@ -312,10 +292,7 @@ function displayGallery(items) {
 }
 
 
-// ========================================
 // OPEN THE MODAL
-// ========================================
-
 function openModal(item) {
   modalTitle.textContent =
     item.title || "Astronomy Picture of the Day";
@@ -376,10 +353,7 @@ function openModal(item) {
 }
 
 
-// ========================================
 // CLOSE THE MODAL
-// ========================================
-
 // Close with the X button.
 closeModalButton.addEventListener("click", function () {
   modal.close();

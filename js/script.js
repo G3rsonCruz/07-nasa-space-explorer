@@ -33,6 +33,7 @@ const spaceFacts = [
 ];
 
 const randomIndex = Math.floor(Math.random() * spaceFacts.length);
+// Show one of the facts chosen at random.
 document.getElementById("spaceFact").textContent =
   spaceFacts[randomIndex];
 
@@ -99,13 +100,14 @@ dateForm.addEventListener("submit", async function (event) {
   const timeout = setTimeout(() => controller.abort(), 45000);
 
   try {
-    // Date inputs already return YYYY-MM-DD.
+    // Add the API key and selected dates to the request URL.
     const parameters = new URLSearchParams({
       api_key: apiKey,
       start_date: startDate,
       end_date: endDate
     });
 
+    // Ask NASA for the images between the selected dates.
     const response = await fetch(
       "https://api.nasa.gov/planetary/apod?" + parameters,
       { signal: controller.signal }
@@ -125,13 +127,14 @@ dateForm.addEventListener("submit", async function (event) {
       );
     }
 
+    // Convert NASA's JSON response into JavaScript data.
     const data = await response.json();
 
     if (!Array.isArray(data)) {
       throw new Error("NASA returned an unexpected response.");
     }
 
-    // Display newest entries first.
+    // Display newest entries first, then build the gallery.
     data.sort((a, b) => b.date.localeCompare(a.date));
 
     displayGallery(data);
@@ -162,6 +165,7 @@ dateForm.addEventListener("submit", async function (event) {
 function displayGallery(items) {
   gallery.replaceChildren();
 
+  // Create one clickable card for each entry from NASA.
   items.forEach(function (item) {
     // A button makes the entire card clickable and keyboard accessible.
     const card = document.createElement("button");

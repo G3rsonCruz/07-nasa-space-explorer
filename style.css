@@ -865,3 +865,58 @@ a:focus-visible {
     transform: none;
   }
 }
+
+/* Starry background with subtle blue and purple nebula glows */
+body {
+  background-color: #030711;
+
+  background-image:
+    /* Small white stars */
+    radial-gradient(
+      circle at 25px 35px,
+      rgba(255, 255, 255, 0.7) 1px,
+      transparent 1.5px
+    ),
+
+    /* Fainter blue stars */
+    radial-gradient(
+      circle at 110px 90px,
+      rgba(165, 200, 255, 0.5) 1px,
+      transparent 1.5px
+    ),
+
+    /* Occasional brighter stars */
+    radial-gradient(
+      circle at 180px 150px,
+      rgba(255, 255, 255, 0.8) 1px,
+      transparent 2px
+    ),
+
+    /* Blue glow near the header */
+    radial-gradient(
+      ellipse at 15% 10%,
+      rgba(25, 75, 155, 0.35),
+      transparent 55%
+    ),
+
+    /* Soft purple glow on the right */
+    radial-gradient(
+      ellipse at 90% 45%,
+      rgba(80, 40, 130, 0.2),
+      transparent 50%
+    );
+
+  background-size:
+    173px 191px,
+    277px 263px,
+    419px 397px,
+    100% 100%,
+    100% 100%;
+
+  background-repeat:
+    repeat,
+    repeat,
+    repeat,
+    no-repeat,
+    no-repeat;
+}

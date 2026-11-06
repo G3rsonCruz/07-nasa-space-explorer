@@ -1,17 +1,48 @@
-/* Global reset */
+/* ========================================
+   GLOBAL STYLES
+======================================== */
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* Base styles */
+:root {
+  color-scheme: dark;
+}
+
 body {
   font-family: Arial, sans-serif;
-  background-color: #f1f1f1;
-  color: #212121;
-  padding: 20px;
-  line-height: 1.5;
+  color: #edf2ff;
+  background-color: #060b18;
+
+  /* Small stars with a soft blue glow behind them */
+  background-image:
+    radial-gradient(
+      circle at 20px 30px,
+      rgba(255, 255, 255, 0.45) 1px,
+      transparent 1.5px
+    ),
+    radial-gradient(
+      circle at 90px 80px,
+      rgba(160, 195, 255, 0.35) 1px,
+      transparent 1.5px
+    ),
+    radial-gradient(
+      ellipse at top,
+      #16274b 0%,
+      #060b18 65%
+    );
+
+  background-size:
+    170px 170px,
+    260px 260px,
+    100% 100%;
+
+  min-height: 100vh;
+  padding: 25px;
+  line-height: 1.6;
 }
 
 .container {
@@ -19,65 +50,95 @@ body {
   margin: 0 auto;
 }
 
-/* Header */
+
+/* ========================================
+   HEADER
+======================================== */
+
 .site-header {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px 0;
-  margin-bottom: 20px;
-}
-
-h1 {
-  font-family: Verdana, sans-serif;
-  color: #0b3d91;
+  gap: 20px;
+  padding: 35px 0;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #2b3a57;
 }
 
 .logo {
   width: 140px;
-  margin-right: 15px;
+  height: auto;
 }
 
-/* Date controls */
+h1 {
+  font-family: Verdana, sans-serif;
+  font-size: clamp(26px, 4vw, 42px);
+  color: #f5f7ff;
+  letter-spacing: -1px;
+}
+
+
+/* ========================================
+   DATE CONTROLS
+======================================== */
+
 .filters {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 18px;
   justify-content: center;
-  margin-bottom: 25px;
+  max-width: 850px;
+  margin: 0 auto 25px;
+  padding: 25px;
+  background: #101a2e;
+  border: 1px solid #2b3a57;
+  border-radius: 12px;
 }
 
 .filters label {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
+  color: #c4d1e8;
+  font-size: 14px;
   font-weight: bold;
 }
 
 input[type="date"],
 button {
   font-family: Arial, sans-serif;
-  padding: 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
   font-size: 16px;
   line-height: 1.4;
+  padding: 12px 16px;
+  border-radius: 6px;
 }
 
 input[type="date"] {
-  background: white;
-  color: #212121;
   width: 100%;
+  min-width: 0;
+  background: #090f1f;
+  color: #f5f7ff;
+  border: 1px solid #465779;
+}
+
+input[type="date"]:hover {
+  border-color: #8bb8ff;
 }
 
 button {
-  background-color: #0b3d91;
+  background: #174ea6;
   color: white;
+  border: 1px solid #467bd0;
   cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 button:hover {
-  background-color: #061f4a;
+  background: #205fbe;
 }
 
 button:disabled {
@@ -88,103 +149,129 @@ button:disabled {
 button:focus-visible,
 input:focus-visible,
 a:focus-visible {
-  outline: 3px solid #105bd8;
+  outline: 3px solid #9ac4ff;
   outline-offset: 4px;
 }
 
-/* Random space fact */
+
+/* ========================================
+   RANDOM SPACE FACT
+======================================== */
+
 .space-fact {
-  max-width: 800px;
-  margin: 0 auto 20px;
-  padding: 20px;
-  background: #e1f3f8;
-  border-left: 5px solid #0b3d91;
-  border-radius: 4px;
+  max-width: 850px;
+  margin: 0 auto 25px;
+  padding: 22px 25px;
+  background: #111f36;
+  border: 1px solid #30476a;
+  border-left: 4px solid #8bb8ff;
+  border-radius: 10px;
 }
 
 .space-fact h2 {
-  color: #0b3d91;
+  color: #a9cdff;
   font-size: 20px;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
-/* Loading and error messages */
+.space-fact p {
+  color: #d2def0;
+}
+
+
+/* ========================================
+   LOADING AND ERROR MESSAGES
+======================================== */
+
 #status {
   text-align: center;
-  color: #0b3d91;
-  margin-bottom: 15px;
+  color: #b7d5ff;
+  margin: 25px 0;
+  font-size: 15px;
 }
 
 #status.error {
-  color: #a12016;
+  color: #ffb4ab;
 }
 
-/* Gallery */
+
+/* ========================================
+   GALLERY
+======================================== */
+
 .gallery {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  padding: 20px;
   justify-content: center;
+  gap: 24px;
+  padding: 10px 0;
 }
 
-/* Cards are buttons so keyboard users can open them. */
 .gallery-item {
   flex: 1 1 100%;
   min-width: 0;
   max-width: 500px;
-  background: white;
-  color: #212121;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+
   display: flex;
   flex-direction: column;
+  align-items: stretch;
+
+  background: #111b2e;
+  color: #edf2ff;
+  border: 1px solid #30415e;
+  border-radius: 12px;
+  padding: 12px;
+  overflow: hidden;
   text-align: left;
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .gallery-item:hover {
-  background: white;
-  border-color: #0b3d91;
+  background: #15223a;
+  border-color: #8bb8ff;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
 }
 
 .image-container {
   display: block;
   width: 100%;
-  height: 200px;
+  height: 220px;
   overflow: hidden;
-  border-radius: 4px;
-  background: #061f4a;
+  border-radius: 7px;
+  background: #060b18;
 }
 
 .gallery-item img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
-  transition: transform 0.3s ease;
+  transition: transform 0.35s ease;
 }
 
-/* Extra credit: hover zoom */
+/* Extra credit: smooth image zoom */
 .gallery-item:hover img,
 .gallery-item:focus-visible img {
-  transform: scale(1.08);
+  transform: scale(1.06);
 }
 
 .card-title {
   display: block;
-  color: #0b3d91;
+  color: #f0f5ff;
   font-size: 18px;
-  margin-top: 12px;
+  line-height: 1.4;
+  margin: 16px 5px 10px;
+  overflow-wrap: anywhere;
 }
 
 .card-date {
   display: block;
-  margin-top: 5px;
-  color: #555;
+  color: #aebed8;
   font-size: 14px;
+
+  /* Keep dates aligned toward the bottom of each row */
+  margin: auto 5px 6px;
 }
 
 .media-placeholder {
@@ -194,61 +281,90 @@ a:focus-visible {
   width: 100%;
   height: 100%;
   padding: 20px;
-  color: white;
+  color: #c6dcff;
+  background: #0b1427;
   text-align: center;
 }
 
-/* Initial and empty states */
+
+/* ========================================
+   INITIAL PLACEHOLDER
+======================================== */
+
 .placeholder {
   flex: 1 1 100%;
+  padding: 55px 20px;
   text-align: center;
-  padding: 40px 15px;
-  color: #666;
+  color: #b8c7df;
+  background: #101a2e;
+  border: 1px dashed #465779;
+  border-radius: 12px;
 }
 
 .placeholder-icon {
   font-size: 48px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
-/* Modal */
+
+/* ========================================
+   MODAL
+======================================== */
+
 #imageModal {
   margin: auto;
   width: min(850px, 92vw);
   max-height: 90vh;
-  border: none;
-  border-radius: 10px;
   padding: 0;
-  color: #212121;
-  background: white;
+
+  color: #edf2ff;
+  background: #101a2e;
+  border: 1px solid #465779;
+  border-radius: 12px;
+
   overflow-y: auto;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
 }
 
 #imageModal::backdrop {
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(2, 5, 14, 0.88);
 }
 
 .modal-content {
   position: relative;
-  padding: 25px;
+  padding: 28px;
 }
 
 .close-modal {
   position: absolute;
   top: 12px;
   right: 12px;
-  padding: 6px 12px;
+
+  width: 44px;
+  height: 44px;
+  padding: 0;
+
+  background: #1c2c47;
+  border: 1px solid #52698e;
+  border-radius: 50%;
+}
+
+.close-modal:hover {
+  background: #30476a;
 }
 
 #modalTitle {
-  color: #0b3d91;
   padding-right: 50px;
   margin-bottom: 8px;
+  color: #f5f7ff;
+  font-size: 25px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
 }
 
 #modalDate {
-  color: #555;
-  margin-bottom: 20px;
+  color: #aebed8;
+  margin-bottom: 22px;
 }
 
 #modalMedia img {
@@ -256,72 +372,117 @@ a:focus-visible {
   width: 100%;
   max-height: 60vh;
   object-fit: contain;
-  border-radius: 4px;
-  background: #061f4a;
+  background: #050914;
+  border-radius: 8px;
 }
 
 .video-link {
   display: inline-block;
-  background: #0b3d91;
-  color: white;
   padding: 12px 18px;
-  border-radius: 4px;
+  color: white;
+  background: #174ea6;
+  border: 1px solid #467bd0;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.video-link:hover {
+  background: #205fbe;
 }
 
 #modalExplanation {
-  margin-top: 20px;
+  margin-top: 22px;
+  color: #d2def0;
+  line-height: 1.8;
   white-space: pre-line;
 }
 
 #modalCredit {
-  margin-top: 15px;
-  color: #555;
+  margin-top: 18px;
+  color: #aebed8;
   font-size: 13px;
 }
 
+
+/* ========================================
+   FOOTER
+======================================== */
+
 footer {
-  text-align: center;
-  color: #666;
-  font-size: 12px;
+  margin-top: 35px;
   padding: 25px 0;
+  border-top: 1px solid #2b3a57;
+  color: #aebed8;
+  text-align: center;
+  font-size: 12px;
 }
 
-/* Responsive layout */
+
+/* ========================================
+   RESPONSIVE LAYOUT
+======================================== */
+
 @media (min-width: 600px) {
   .filters {
     flex-direction: row;
     align-items: flex-end;
+    flex-wrap: wrap;
   }
 
   .gallery-item {
-    flex: 0 1 calc(50% - 10px);
+    flex: 0 1 calc(50% - 12px);
   }
 }
 
 @media (min-width: 1000px) {
   .gallery-item {
-    flex: 0 1 31%;
+    flex: 0 1 calc(33.333% - 16px);
   }
 }
 
-@media (max-width: 450px) {
+@media (max-width: 599px) {
+  body {
+    padding: 16px;
+  }
+
   .site-header {
     flex-direction: column;
-    gap: 15px;
+    gap: 16px;
+    padding: 25px 0;
     text-align: center;
   }
 
   .logo {
-    margin-right: 0;
+    width: 120px;
   }
 
-  .gallery {
-    padding: 0;
+  .filters,
+  .space-fact {
+    padding: 20px;
+  }
+
+  .modal-content {
+    padding: 20px;
+  }
+
+  #modalTitle {
+    font-size: 21px;
   }
 }
 
+
+/* ========================================
+   REDUCED MOTION
+======================================== */
+
 @media (prefers-reduced-motion: reduce) {
+  button,
   .gallery-item img {
     transition: none;
+  }
+
+  .gallery-item:hover img,
+  .gallery-item:focus-visible img {
+    transform: none;
   }
 }

@@ -1,11 +1,18 @@
-// Find our date picker inputs.
+// ========================================
+// DATE INPUTS
+// ========================================
+
 const startInput = document.getElementById("startDate");
 const endInput = document.getElementById("endDate");
 
-// Use the existing dateRange.js helper.
+// Use the provided dateRange.js helper.
 setupDateInputs(startInput, endInput);
 
-// Find the rest of our page elements.
+
+// ========================================
+// PAGE ELEMENTS
+// ========================================
+
 const dateForm = document.getElementById("dateForm");
 const gallery = document.getElementById("gallery");
 const getImagesButton = document.getElementById("getImages");
@@ -19,10 +26,11 @@ const modalMedia = document.getElementById("modalMedia");
 const modalExplanation = document.getElementById("modalExplanation");
 const modalCredit = document.getElementById("modalCredit");
 
-// Replace DEMO_KEY with your own NASA API key if needed.
-const apiKey = "DEMO_KEY";
 
-// Extra credit: pick a random fact on each page load.
+// ========================================
+// RANDOM SPACE FACT
+// ========================================
+
 const spaceFacts = [
   "Sunlight takes about eight minutes to reach Earth.",
   "Venus takes longer to rotate once than to orbit the Sun.",
@@ -33,11 +41,16 @@ const spaceFacts = [
 ];
 
 const randomIndex = Math.floor(Math.random() * spaceFacts.length);
-// Show one of the facts chosen at random.
+
 document.getElementById("spaceFact").textContent =
   spaceFacts[randomIndex];
 
-// Format dates without shifting them into a different day.
+
+// ========================================
+// HELPER FUNCTIONS
+// ========================================
+
+// Display dates in a readable format.
 function formatDate(date) {
   return new Date(date + "T12:00:00").toLocaleDateString("en-US", {
     month: "long",
@@ -46,7 +59,18 @@ function formatDate(date) {
   });
 }
 
-// Accept only ordinary web URLs from API data.
+// NASA's explanations can contain HTML.
+// Convert it to text instead of inserting HTML into our page.
+function plainText(value) {
+  const parsedDocument = new DOMParser().parseFromString(
+    String(value || "").replace(/<br\s*\/?>/gi, "\n"),
+    "text/html"
+  );
+
+  return parsedDocument.body.textContent.trim();
+}
+
+// Allow only normal web addresses.
 function safeUrl(value) {
   try {
     const url = new URL(value);
@@ -55,21 +79,102 @@ function safeUrl(value) {
       return url.href;
     }
   } catch {
-    // Invalid or missing URL.
+    // Missing or invalid URL.
   }
 
   return "";
 }
 
-// NASA's newer responses put the image in hdurl.
-// Older responses may also have an image in url.
+// The APOD Basic feed stores the image address in hdurl.
+// Its url field points to the NASA article, not the image.
 function getImageUrl(item) {
-  return safeUrl(
-    item.hdurl || (!item.permalink ? item.url : "")
-  );
+  return safeUrl(item.hdurl);
 }
 
-// Request images when the user submits the date form.
+// Create a message for video entries or unavailable images.
+function createMediaPlaceholder(message) {
+  const placeholder = document.createElement("span");
+  placeholder.className = "media-placeholder";
+  placeholder.textContent = message;
+
+  return placeholder;
+}
+
+
+// ========================================
+// FETCH NASA DATA
+// ========================================
+
+async function fetchSpaceEntries(startDate, endDate, signal) {
+  // This feed expects dates in YYMMDD format.
+  // Example: 2026-11-05 becomes 261105.
+  const dateFrom = startDate.replaceAll("-", "").slice(2);
+  const dateTo = endDate.replaceAll("-", "").slice(2);
+
+  const entries = [];
+  let page = 1;
+  let totalPages = 1;
+
+  // NASA returns up to 25 entries per page.
+  // Fetch additional pages for longer date ranges.
+  do {
+    const parameters = new URLSearchParams({
+      date_from: dateFrom,
+      date_to: dateTo,
+      per_page: "25",
+      page: String(page)
+    });
+
+    const response = await fetch(
+      "https://science.nasa.gov/wp-json/wp/v2/apod-basic?" +
+        parameters,
+      { signal }
+    );
+
+    if (!response.ok) {
+      if (response.status === 429) {
+        throw new Error(
+          "NASA is receiving too many requests. Please try again later."
+        );
+      }
+
+      throw new Error(
+        "NASA could not load these dates. Please try again. " +
+        "Error: " + response.status
+      );
+    }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data)) {
+      throw new Error("NASA returned an unexpected response.");
+    }
+
+    entries.push(...data);
+
+    totalPages = Number(
+      response.headers.get("X-WP-TotalPages") || 1
+    );
+
+    page++;
+  } while (page <= totalPages);
+
+  // Clean the text while preserving image and video information.
+  return entries.map(function (item) {
+    return {
+      ...item,
+      title: plainText(item.title),
+      explanation: plainText(item.explanation),
+      copyright: plainText(item.copyright || item.credit)
+    };
+  });
+}
+
+
+// ========================================
+// GET SPACE IMAGES BUTTON
+// ========================================
+
 dateForm.addEventListener("submit", async function (event) {
   event.preventDefault();
 
@@ -78,7 +183,7 @@ dateForm.addEventListener("submit", async function (event) {
 
   statusMessage.classList.remove("error");
 
-  // Check that both dates are inside the allowed range.
+  // Check required dates and the allowed date limits.
   if (!dateForm.reportValidity()) {
     return;
   }
@@ -86,62 +191,38 @@ dateForm.addEventListener("submit", async function (event) {
   if (startDate > endDate) {
     statusMessage.textContent =
       "Please choose an end date on or after the start date.";
+
     statusMessage.classList.add("error");
+    endInput.focus();
     return;
   }
 
-  // Show a loading message and clear previous results.
+  // Remove the initial placeholder or previous results.
   gallery.replaceChildren();
   gallery.setAttribute("aria-busy", "true");
+
   statusMessage.textContent = "🔄 Loading space photos…";
   getImagesButton.disabled = true;
 
+  // Stop the request if NASA takes longer than 45 seconds.
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 45000);
 
   try {
-    // Add the API key and selected dates to the request URL.
-    const parameters = new URLSearchParams({
-      api_key: apiKey,
-      start_date: startDate,
-      end_date: endDate
-    });
-
-    // Ask NASA for the images between the selected dates.
-    const response = await fetch(
-      "https://api.nasa.gov/planetary/apod?" + parameters,
-      { signal: controller.signal }
+    const data = await fetchSpaceEntries(
+      startDate,
+      endDate,
+      controller.signal
     );
 
-    if (!response.ok) {
-      if (response.status === 429) {
-        throw new Error(
-          "NASA's request limit was reached. Try again later " +
-          "or replace DEMO_KEY with your own NASA API key."
-        );
-      }
-
-      throw new Error(
-        "NASA could not load these dates. Check your API key " +
-        "or try a shorter date range. Error: " + response.status
-      );
-    }
-
-    // Convert NASA's JSON response into JavaScript data.
-    const data = await response.json();
-
-    if (!Array.isArray(data)) {
-      throw new Error("NASA returned an unexpected response.");
-    }
-
-    // Display newest entries first, then build the gallery.
+    // Show the newest entries first.
     data.sort((a, b) => b.date.localeCompare(a.date));
 
     displayGallery(data);
 
     statusMessage.textContent = data.length
       ? `${data.length} space entries loaded. Click one to learn more!`
-      : "No entries found. Try another date range.";
+      : "No published entries found. Try an earlier date range.";
   } catch (error) {
     statusMessage.classList.add("error");
 
@@ -161,13 +242,17 @@ dateForm.addEventListener("submit", async function (event) {
   }
 });
 
-// Build the gallery from NASA's response.
+
+// ========================================
+// DISPLAY THE GALLERY
+// ========================================
+
 function displayGallery(items) {
+  // Replace previous cards whenever new results load.
   gallery.replaceChildren();
 
-  // Create one clickable card for each entry from NASA.
   items.forEach(function (item) {
-    // A button makes the entire card clickable and keyboard accessible.
+    // A button allows mouse and keyboard users to open the card.
     const card = document.createElement("button");
     card.type = "button";
     card.className = "gallery-item";
@@ -176,34 +261,41 @@ function displayGallery(items) {
     const imageContainer = document.createElement("span");
     imageContainer.className = "image-container";
 
-    const imageUrl =
-      item.media_type === "image" ? getImageUrl(item) : "";
+    if (item.media_type === "image") {
+      const imageUrl = getImageUrl(item);
 
-    if (imageUrl) {
-      const image = document.createElement("img");
-      image.src = imageUrl;
-      image.alt = item.title;
-      image.loading = "lazy";
+      if (imageUrl) {
+        const image = document.createElement("img");
+        image.src = imageUrl;
+        image.alt = item.title || "Astronomy Picture of the Day";
+        image.loading = "lazy";
 
-      // Handle an image URL that fails to load.
-      image.addEventListener("error", function () {
-        imageContainer.replaceChildren(
-          createMediaPlaceholder("Image unavailable — view details")
+        image.addEventListener("error", function () {
+          imageContainer.replaceChildren(
+            createMediaPlaceholder(
+              "Image unavailable — click for details"
+            )
+          );
+        });
+
+        imageContainer.appendChild(image);
+      } else {
+        imageContainer.appendChild(
+          createMediaPlaceholder(
+            "Image unavailable — click for details"
+          )
         );
-      });
-
-      imageContainer.appendChild(image);
+      }
     } else {
-      const label = item.media_type === "image"
-        ? "Image unavailable — view details"
-        : "▶ Video / media — click to view";
-
-      imageContainer.appendChild(createMediaPlaceholder(label));
+      // Video and interactive entries still get a clickable card.
+      imageContainer.appendChild(
+        createMediaPlaceholder("▶ Video / media — click to view")
+      );
     }
 
     const title = document.createElement("strong");
     title.className = "card-title";
-    title.textContent = item.title;
+    title.textContent = item.title || "Astronomy Picture of the Day";
 
     const date = document.createElement("span");
     date.className = "card-date";
@@ -219,24 +311,25 @@ function displayGallery(items) {
   });
 }
 
-function createMediaPlaceholder(message) {
-  const placeholder = document.createElement("span");
-  placeholder.className = "media-placeholder";
-  placeholder.textContent = message;
-  return placeholder;
-}
 
-// Show the selected entry's full details.
+// ========================================
+// OPEN THE MODAL
+// ========================================
+
 function openModal(item) {
-  modalTitle.textContent = item.title;
+  modalTitle.textContent =
+    item.title || "Astronomy Picture of the Day";
+
   modalDate.textContent = formatDate(item.date);
+
   modalExplanation.textContent =
     item.explanation || "No explanation is available.";
+
   modalCredit.textContent = item.copyright
     ? "Image credit: " + item.copyright
     : "";
 
-  // Remove the previously selected image or video link.
+  // Remove content from the previously opened entry.
   modalMedia.replaceChildren();
 
   if (item.media_type === "image") {
@@ -245,7 +338,7 @@ function openModal(item) {
     if (imageUrl) {
       const image = document.createElement("img");
       image.src = imageUrl;
-      image.alt = item.title;
+      image.alt = item.title || "Astronomy Picture of the Day";
 
       image.addEventListener("error", function () {
         const message = document.createElement("p");
@@ -255,10 +348,11 @@ function openModal(item) {
 
       modalMedia.appendChild(image);
     } else {
-      modalMedia.textContent = "No image is available for this entry.";
+      modalMedia.textContent =
+        "No image is available for this entry.";
     }
   } else {
-    // Extra credit: clearly link to videos and other media.
+    // NASA's article page lets the user access the video.
     const videoUrl = safeUrl(item.permalink || item.url);
 
     if (videoUrl) {
@@ -267,10 +361,13 @@ function openModal(item) {
       videoLink.target = "_blank";
       videoLink.rel = "noopener noreferrer";
       videoLink.className = "video-link";
-      videoLink.textContent = "▶ Open video / media in a new tab";
+      videoLink.textContent =
+        "▶ Open video / media in a new tab";
+
       modalMedia.appendChild(videoLink);
     } else {
-      modalMedia.textContent = "No media link is available.";
+      modalMedia.textContent =
+        "No media link is available for this entry.";
     }
   }
 
@@ -278,12 +375,17 @@ function openModal(item) {
   modal.scrollTop = 0;
 }
 
-// Close using the visible button.
+
+// ========================================
+// CLOSE THE MODAL
+// ========================================
+
+// Close with the X button.
 closeModalButton.addEventListener("click", function () {
   modal.close();
 });
 
-// Close when clicking the backdrop outside the modal.
+// Close when clicking outside the modal.
 modal.addEventListener("click", function (event) {
   const bounds = modal.getBoundingClientRect();
 
@@ -298,4 +400,4 @@ modal.addEventListener("click", function (event) {
   }
 });
 
-// Escape-to-close is built into the native <dialog> element.
+// The HTML <dialog> also closes when the user presses Escape.

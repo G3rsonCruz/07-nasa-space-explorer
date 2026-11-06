@@ -1,6 +1,4 @@
-/* ========================================
-   GLOBAL STYLES
-======================================== */
+/*  GLOBAL STYLES */
 
 * {
   box-sizing: border-box;
@@ -51,9 +49,7 @@ body {
 }
 
 
-/* ========================================
-   HEADER
-======================================== */
+/*  HEADER */
 
 .site-header {
   display: flex;
@@ -78,9 +74,7 @@ h1 {
 }
 
 
-/* ========================================
-   DATE CONTROLS
-======================================== */
+/* DATE CONTROL */
 
 .filters {
   display: flex;
@@ -154,9 +148,7 @@ a:focus-visible {
 }
 
 
-/* ========================================
-   RANDOM SPACE FACT
-======================================== */
+/* RANDOM SPACE FACT */
 
 .space-fact {
   max-width: 850px;
@@ -179,9 +171,7 @@ a:focus-visible {
 }
 
 
-/* ========================================
-   LOADING AND ERROR MESSAGES
-======================================== */
+/* LOADING AND ERROR MESSAGE */
 
 #status {
   text-align: center;
@@ -195,9 +185,7 @@ a:focus-visible {
 }
 
 
-/* ========================================
-   GALLERY
-======================================== */
+/* GALLERY */
 
 .gallery {
   display: flex;
@@ -287,9 +275,7 @@ a:focus-visible {
 }
 
 
-/* ========================================
-   INITIAL PLACEHOLDER
-======================================== */
+/* INITIAL PLACEHOLDER */
 
 .placeholder {
   flex: 1 1 100%;
@@ -307,9 +293,7 @@ a:focus-visible {
 }
 
 
-/* ========================================
-   MODAL
-======================================== */
+/* MODAL */
 
 #imageModal {
   margin: auto;
@@ -404,9 +388,7 @@ a:focus-visible {
 }
 
 
-/* ========================================
-   FOOTER
-======================================== */
+/*  FOOTER */
 
 footer {
   margin-top: 35px;
@@ -418,9 +400,7 @@ footer {
 }
 
 
-/* ========================================
-   RESPONSIVE LAYOUT
-======================================== */
+/*  RESPONSIVE LAYOUT */
 
 @media (min-width: 600px) {
   .filters {
@@ -471,9 +451,7 @@ footer {
 }
 
 
-/* ========================================
-   REDUCED MOTION
-======================================== */
+/*  REDUCED MOTION */
 
 @media (prefers-reduced-motion: reduce) {
   button,
@@ -487,9 +465,7 @@ footer {
   }
 }
 
-/* ========================================
-   NASA THEME WITH A POLISHED FINISH
-======================================== */
+/*  NASA THEME WITH A POLISHED FINISH */
 
 body {
   font-family: -apple-system, BlinkMacSystemFont,
@@ -508,9 +484,7 @@ body {
   max-width: 1200px;
 }
 
-/* ========================================
-   HEADER
-======================================== */
+/* HEADER */
 
 .site-header {
   flex-direction: column;
@@ -536,9 +510,7 @@ h1 {
   color: #f5f5f7;
 }
 
-/* ========================================
-   DATE CONTROLS
-======================================== */
+/*  DATE CONTROLS */
 
 .filters {
   max-width: 850px;
@@ -598,9 +570,7 @@ input[type="date"]:hover {
   transform: translateY(-2px);
 }
 
-/* ========================================
-   SPACE FACT
-======================================== */
+/*  SPACE FACT */
 
 .space-fact {
   max-width: 850px;
@@ -630,9 +600,7 @@ input[type="date"]:hover {
   line-height: 1.6;
 }
 
-/* ========================================
-   STATUS
-======================================== */
+/*  STATUS */
 
 #status {
   margin: 30px 0;
@@ -644,9 +612,7 @@ input[type="date"]:hover {
   color: #ffb4ab;
 }
 
-/* ========================================
-   GALLERY CARDS
-======================================== */
+/*  GALLERY CARDS */
 
 .gallery {
   gap: 24px;
@@ -723,9 +689,7 @@ input[type="date"]:hover {
   }
 }
 
-/* ========================================
-   INITIAL PLACEHOLDER
-======================================== */
+/*  INITIAL PLACEHOLDE */
 
 .placeholder {
   padding: 60px 24px;
@@ -739,9 +703,7 @@ input[type="date"]:hover {
   margin-bottom: 18px;
 }
 
-/* ========================================
-   MODAL
-======================================== */
+/*  MODAL */
 
 #imageModal {
   background: #111824;
@@ -809,9 +771,7 @@ input[type="date"]:hover {
   background: #286dd3;
 }
 
-/* ========================================
-   FOOTER AND ACCESSIBILITY
-======================================== */
+/*  FOOTER AND ACCESSIBILIT */
 
 footer {
   margin-top: 50px;
@@ -827,9 +787,7 @@ a:focus-visible {
   outline-offset: 4px;
 }
 
-/* ========================================
-   MOBILE
-======================================== */
+/*  MOBILE */
 
 @media (max-width: 599px) {
   .site-header {

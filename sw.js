@@ -1,5 +1,5 @@
 // Change VERSION whenever app-shell files change.
-const VERSION = "v2";
+const VERSION = "v3";
 const PREFIX = `nasa-explorer-${self.registration.scope}-`;
 const SHELL = `${PREFIX}shell-${VERSION}`;
 const API = `${PREFIX}api-${VERSION}`;

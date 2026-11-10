@@ -35,3 +35,28 @@
   border-color: #b88c39;
   background: #302713;
 }
+
+/* Keep native date controls inside the form on small screens. */
+@media (max-width: 599px) {
+  .filters label {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .filters input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 48px;
+  }
+
+  .filters input[type="date"]::-webkit-date-and-time-value {
+    min-width: 0;
+    text-align: left;
+  }
+}

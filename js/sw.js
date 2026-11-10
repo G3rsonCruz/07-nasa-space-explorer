@@ -1,5 +1,5 @@
 // Change VERSION whenever app-shell files change.
-const VERSION = "v1";
+const VERSION = "v2";
 const PREFIX = `nasa-explorer-${self.registration.scope}-`;
 const SHELL = `${PREFIX}shell-${VERSION}`;
 const API = `${PREFIX}api-${VERSION}`;
@@ -101,7 +101,10 @@ self.addEventListener("fetch", (event) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   event.waitUntil((async () => {
-    const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    const windows = await self.clients.matchAll({
+      type: "window",
+      includeUncontrolled: true
+    });
     const existing = windows.find((client) => client.url.startsWith(APP_URL));
     if (existing) return existing.focus();
     return self.clients.openWindow(APP_URL);

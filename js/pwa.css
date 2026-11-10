@@ -1,0 +1,37 @@
+[hidden] {
+  display: none !important;
+}
+
+.app-tools,
+.connection-status {
+  max-width: 850px;
+  margin: 0 auto 20px;
+  padding: 20px 24px;
+  border: 1px solid #354055;
+  border-radius: 18px;
+  background: #101927;
+}
+
+.app-tools h2 {
+  font-size: 20px;
+  color: #a9cdff;
+}
+
+.app-tools p {
+  margin-top: 8px;
+  color: #d5deed;
+}
+
+.app-tools button {
+  margin-top: 14px;
+}
+
+.app-tools button:disabled {
+  cursor: default;
+}
+
+.connection-status {
+  color: #ffe4a3;
+  border-color: #b88c39;
+  background: #302713;
+}

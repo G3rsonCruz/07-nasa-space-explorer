@@ -111,15 +111,36 @@
         updateConnection();
       }
     });
+
+    let setupTimer;
     try {
-      await navigator.serviceWorker.register("./sw.js");
-      registration = await navigator.serviceWorker.ready;
+      // Registration may succeed even when app-shell caching fails.
+      // The ready promise never rejects, so give setup a time limit.
+      const setup = (async () => {
+        await navigator.serviceWorker.register("./sw.js");
+        return await navigator.serviceWorker.ready;
+      })();
+
+      const timeout = new Promise((resolve, reject) => {
+        setupTimer = setTimeout(() => reject(new Error(
+          "Setup timed out. Check that pwa.css, manifest.json, sw.js, " +
+          "js/pwa.js, img/icon-192.png and img/icon-512.png exist " +
+          "in the correct folders. Then close this app's tabs and reopen it."
+        )), 15000);
+      });
+
+      registration = await Promise.race([setup, timeout]);
       offlineReady.textContent = "App ready offline. Load a date range online to save its entries and viewed photos.";
       updateNotifications();
-    } catch {
-      offlineReady.textContent = "Offline setup failed. Reload while connected to try again.";
-      notifyStatus.textContent = "Notifications need the app's offline setup to finish.";
+    } catch (error) {
+      console.error("Space Explorer offline setup failed:", error);
+      offlineReady.textContent = "Offline setup failed. " + error.message;
+      notifyButton.disabled = true;
+      notifyStatus.textContent = "Notifications are unavailable until offline setup succeeds. Fix the files and reload.";
+    } finally {
+      clearTimeout(setupTimer);
     }
   }
+
   prepareOffline();
 })();
